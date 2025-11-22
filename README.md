@@ -6,6 +6,7 @@
 ## 🚀 Warp Into Retro Puzzle Action!
 
 Click here to play : **https://kool-k.github.io/Shuffled/**
+
 Welcome to **SHUFFLED**, a high-voltage reinvention of the classic 15-puzzle. We've taken the nostalgic sliding block game and injected it with neon vibes, CRT scanlines, and buttery-smooth mechanics.
 
 Whether you're here to beat the clock, relax with some stunning photography, or challenge yourself by unscrambling your own face—Shuffled has you covered.
