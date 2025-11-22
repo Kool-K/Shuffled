@@ -2,7 +2,7 @@
 
 > **Insert Coin to Play... Just Kidding! It's Free.**
 
-<img src="images/logo.png" alt="Shuffled Banner" width="300">
+<img src="images/logo.png" alt="Shuffled Banner" width="100">
 ## 🚀 Warp Into Retro Puzzle Action!
 
 Welcome to **SHUFFLED**, a high-voltage reinvention of the classic 15-puzzle. We've taken the nostalgic sliding block game and injected it with neon vibes, CRT scanlines, and buttery-smooth mechanics.
