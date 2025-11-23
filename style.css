@@ -73,7 +73,7 @@ header {
   font-weight: 900;
   letter-spacing: 6px;
   color: #fff;
-  text-shadow: 2px 2px 0px var(--accent-pink), -2px -2px 0px var(--accent-cyan);
+  text-shadow: 2px 2px 0px var(--accent-pink);
   margin: 0;
   text-align: center;
   line-height: 1.1;
