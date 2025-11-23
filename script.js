@@ -28,10 +28,11 @@ let currentImageSrc = "";
 
 // --- LOCAL IMAGE CONFIGURATION ---
 const galleryImages = [
-    "1.png", "2.jpg", "3.jpg", "4.jpg",
-    "5.jpg", "6.jpg", "7.png", "8.jpg",
-    "9.jpg", "10.jpg", "11.jpg", "12.jpg",
-    "13.png", "14.png", "15.png", "16.png"
+    // need to convert all to webp so let's rewrite
+    "1.webp", "2.webp", "3.webp", "4.webp",
+    "5.webp", "6.webp", "7.webp", "8.webp",
+    "9.webp", "10.webp", "11.webp", "12.webp",
+    "13.webp", "14.webp", "15.webp", "16.webp"
 ];
 
 // --- CORE IMAGE OPTIMIZER ---
