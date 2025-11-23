@@ -1,90 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" type="image/png" href="images/logo.png">
-        <title>Shuffled | The Puzzle Arcade</title>
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    </head>
-    <body>
-        <div class="scanline"></div>
-        <div class="arcade-cabinet">
-            <header>
-                <img src="images/logo.png" alt="Shuffled Logo" class="logo-img">
-                <h1 class="glitch-title" data-text="SHUFFLED">SHUFFLED</h1>
-                <p class="subtitle">Pixel Perfect Puzzle Arcade</p>
-            </header>
-            <div class="game-interface">
-                <div class="board-container">
-                    <div id="puzzle-board" class="grid-4x4"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuffled | The Puzzle Arcade</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="scanline"></div>
+
+    <div class="arcade-cabinet">
+        
+        <header>
+            <h1 class="glitch-title" data-text="SHUFFLED">SHUFFLED</h1>
+            <p class="subtitle">Pixel Perfect Puzzle Arcade</p>
+        </header>
+
+        <div class="top-bar">
+            <div class="stats-panel">
+                <div class="stat-item">
+                    <span>MOVES:</span>
+                    <span id="move-count" class="highlight">0</span>
                 </div>
-                <div class="sidebar">
-                    <div class="panel-box">
-                        <h3>STATS</h3>
-                        <div class="stat-row">
-                            <span>MOVES:</span>
-                            <span id="move-count" class="highlight">0</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>TIME:</span>
-                            <span id="timer" class="highlight">00:00</span>
-                        </div>
+                <div class="stat-separator">|</div>
+                <div class="stat-item">
+                    <span>TIME:</span>
+                    <span id="timer" class="highlight">00:00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-interface">
+            
+            <div class="board-container">
+                <div id="puzzle-board" class="grid-4x4">
                     </div>
-                    <div class="panel-box">
-                        <h3>CONTROLS</h3>
-                        <div class="reference-wrapper">
-                            <p class="label-text">TARGET:</p>
-                            <div class="image-cropper">
-                                <img id="ref-img" src="" alt="Target Reference">
-                            </div>
-                            <p class="disclaimer-text">NOTE: The bottom-right corner must be empty to win.</p>
+            </div>
+
+            <div class="sidebar">
+                <div class="panel-box">
+                    <h3>CONTROLS</h3>
+                    <div class="reference-wrapper">
+                        <p class="label-text">TARGET:</p>
+                        <div class="image-cropper">
+                            <img id="ref-img" src="" alt="Target Reference">
                         </div>
-                        <div class="action-row">
-                            <button id="open-gallery-btn" class="icon-btn" title="Select Image">
-                                <i class="fas fa-images"></i>
-                                Gallery
-                            </button>
-                            <label for="upload-input" class="icon-btn" title="Upload Custom">
-                                <i class="fas fa-upload"></i>
-                                Upload
-                            </label>
-                            <input
-                                type="file"
-                                id="upload-input"
-                                accept="image/*"
-                                hidden
-                            >
-                        </div>
+                        <p class="disclaimer-text">NOTE: The bottom-right corner must be empty to win.</p>
                     </div>
-                    <button id="new-game-btn" class="arcade-btn">SHUFFLE BOARD</button>
+                    
+                    <div class="action-row">
+                        <button id="open-gallery-btn" class="icon-btn" title="Select Image">
+                            <i class="fas fa-images"></i> Gallery
+                        </button>
+                        <label for="upload-input" class="icon-btn" title="Upload Custom">
+                            <i class="fas fa-upload"></i> Upload
+                        </label>
+                        <input type="file" id="upload-input" accept="image/*" hidden>
+                    </div>
                 </div>
+
+                <button id="new-game-btn" class="arcade-btn">SHUFFLE BOARD</button>
             </div>
         </div>
-        <div id="gallery-modal" class="modal hidden">
-            <div class="modal-content gallery-container">
-                <div class="modal-header">
-                    <h2>SELECT CARTRIDGE</h2>
-                    <button id="close-gallery" class="close-btn">&times;</button>
-                </div>
-                <div id="gallery-grid" class="gallery-grid"></div>
+    </div>
+
+    <div id="gallery-modal" class="modal hidden">
+        <div class="modal-content gallery-container">
+            <div class="modal-header">
+                <h2>SELECT CARTRIDGE</h2>
+                <button id="close-gallery" class="close-btn">&times;</button>
             </div>
-        </div>
-        <div id="win-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>LEVEL CLEARED!</h2>
-                <div class="win-stats">
-                    <p>MOVES:
-                        <span id="final-moves" class="highlight">0</span>
-                    </p>
-                    <p>TIME:
-                        <span id="final-time" class="highlight">00:00</span>
-                    </p>
+            <div id="gallery-grid" class="gallery-grid">
                 </div>
-                <button id="play-again-btn" class="arcade-btn">REPLAY</button>
-            </div>
         </div>
-        <script src="script.js"></script>
-    </body>
-</html>
+    </div>
+
+    <div id="win-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>LEVEL CLEARED!</h2>
+            <div class="win-stats">
+                <p>MOVES: <span id="final-moves" class="highlight">0</span></p>
+                <p>TIME: <span id="final-time" class="highlight">00:00</span></p>
+            </div>
+            <button id="play-again-btn" class="arcade-btn">REPLAY</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
