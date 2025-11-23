@@ -81,6 +81,7 @@ function initGame() {
     winModal.classList.add("hidden");
 }
 
+
 // --- GALLERY & UPLOAD LOGIC ---
 
 function initGallery() {
