@@ -27,7 +27,6 @@ let isGameActive = false;
 let currentImageSrc = ""; 
 
 // --- LOCAL IMAGE CONFIGURATION ---
-// UPDATE THIS LIST: Change extensions to match your actual files
 const galleryImages = [
     "1.png", "2.jpg", "3.jpg", "4.jpg",
     "5.jpg", "6.jpg", "7.png", "8.jpg",
@@ -36,11 +35,9 @@ const galleryImages = [
 ];
 
 // --- CORE IMAGE OPTIMIZER ---
-// This function ensures ALL images (Gallery or Upload) are resized to 600x600
-// preventing lag on every device.
 function processImageAndStart(sourceUrl) {
     const img = new Image();
-    img.crossOrigin = "Anonymous"; // Helpful if you switch back to online images
+    img.crossOrigin = "Anonymous"; 
     
     img.onload = function() {
         const canvas = document.createElement('canvas');
@@ -96,7 +93,6 @@ function initGallery() {
 
         img.addEventListener("click", () => {
             galleryModal.classList.add("hidden");
-            // NOW USING THE OPTIMIZER
             processImageAndStart(url);
         });
         galleryGrid.appendChild(img);
@@ -109,15 +105,13 @@ uploadInput.addEventListener("change", (e) => {
     if (file) {
         const reader = new FileReader();
         reader.onload = function (event) {
-            // NOW USING THE OPTIMIZER
             processImageAndStart(event.target.result);
         };
         reader.readAsDataURL(file);
     }
 });
 
-// Start with the first image in the gallery
-// We run it through the processor to ensure the first game is also optimized
+// Start with the first image
 window.onload = () => {
     processImageAndStart(`images/${galleryImages[0]}`);
 };
@@ -159,7 +153,7 @@ function isSolvable(boardState) {
     }
 }
 
-// --- RENDERING ---
+// --- RENDERING (UPDATED FOR RESPONSIVE) ---
 
 function renderBoard() {
     board.innerHTML = "";
@@ -172,19 +166,23 @@ function renderBoard() {
             tile.classList.add("empty-tile");
         } else {
             const originalIndex = tileValue - 1;
-            const x = originalIndex % GRID_SIZE;
-            const y = Math.floor(originalIndex / GRID_SIZE);
+            const x = originalIndex % GRID_SIZE; // Column
+            const y = Math.floor(originalIndex / GRID_SIZE); // Row
 
             // Background Image
             tile.style.backgroundImage = `url('${currentImageSrc}')`;
 
-            // Calculate Position
-            const moveX = x * -100 - (x * 4);
-            const moveY = y * -100 - (y * 4);
+            // --- RESPONSIVE CALCULATION ---
+            // 1. Image Size: 400% (Because it's a 4x4 grid, image must cover 4 tiles width)
+            tile.style.backgroundSize = `${GRID_SIZE * 100}%`;
 
-            // Adjust Size
-            tile.style.backgroundSize = `412px 412px`;
-            tile.style.backgroundPosition = `${moveX}px ${moveY}px`;
+            // 2. Position: Calculated as percentage to be responsive
+            // Formula: index * (100% / (GRID_SIZE - 1))
+            const xPos = x * (100 / (GRID_SIZE - 1));
+            const yPos = y * (100 / (GRID_SIZE - 1));
+
+            tile.style.backgroundPosition = `${xPos}% ${yPos}%`;
+            // -----------------------------
 
             // Interaction
             tile.addEventListener("click", () => handleMouseClick(index));
@@ -202,11 +200,16 @@ let dragStartX = 0;
 let dragStartY = 0;
 
 function handleDragStart(e, index) {
+    // Only track if game is active
+    if (!isGameActive) return;
+
     if (e.type === 'mousedown') {
         e.preventDefault();
         dragStartX = e.clientX;
         dragStartY = e.clientY;
     } else if (e.type === 'touchstart') {
+        // Don't preventDefault here to allow scrolling on non-tile areas,
+        // but .tile CSS has touch-action: none so it should be fine.
         dragStartX = e.touches[0].clientX;
         dragStartY = e.touches[0].clientY;
     }
@@ -222,6 +225,8 @@ function handleDragEnd(e, type) {
     let dragEndX, dragEndY;
 
     if (type === 'touch') {
+        // Fallback if touch ended off-screen
+        if (!e.changedTouches || e.changedTouches.length === 0) return;
         dragEndX = e.changedTouches[0].clientX;
         dragEndY = e.changedTouches[0].clientY;
     } else {
@@ -232,6 +237,7 @@ function handleDragEnd(e, type) {
     const diffX = dragEndX - dragStartX;
     const diffY = dragEndY - dragStartY;
 
+    // Threshold of 15px to count as a drag
     if (Math.abs(diffX) > 15 || Math.abs(diffY) > 15) {
         attemptMove(draggedTileIndex, diffX, diffY);
     }
@@ -266,6 +272,7 @@ function handleMouseClick(index) {
 document.addEventListener("keydown", (e) => {
     if (!isGameActive) return;
     
+    // Prevent default scrolling for arrow keys
     if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
         e.preventDefault();
     }
@@ -275,6 +282,8 @@ document.addEventListener("keydown", (e) => {
     const col = emptyIndex % GRID_SIZE;
     let targetIndex = -1;
 
+    // Logic reversed for intuitive keyboard control
+    // (If I press Down, I want the tile ABOVE the gap to move DOWN)
     if (e.key === "ArrowDown" && row > 0) targetIndex = emptyIndex - GRID_SIZE;
     else if (e.key === "ArrowUp" && row < GRID_SIZE - 1) targetIndex = emptyIndex + GRID_SIZE;
     else if (e.key === "ArrowRight" && col > 0) targetIndex = emptyIndex - 1;

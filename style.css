@@ -4,8 +4,9 @@
   --accent-cyan: #00eaff;
   --accent-pink: #ff0055;
   --text-color: #e0e0e0;
-  --tile-size: 100px;
+  /* UPDATED: Removed fixed --tile-size */
   --gap: 4px;
+  --board-max-width: 450px; /* Maximum size for desktop */
 }
 
 body {
@@ -25,11 +26,13 @@ body {
   min-height: 100vh;
   margin: 0;
   user-select: none;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
 }
 
 /* --- Retro Scanline Effect --- */
 .scanline {
-display: none;
+  display: none; /* Keep hidden by default as per previous code, enable if desired */
   position: fixed;
   top: 0;
   left: 0;
@@ -49,23 +52,20 @@ display: none;
 }
 
 /* --- Typography --- */
-/* IN style.css */
-
-/* Update header to align items */
 header {
     text-align: center;
     margin-bottom: 25px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 0 10px; /* Safety padding for mobile */
 }
 
-/* Style for the new logo image */
 .logo-img {
-    width: 80px; /* Adjust size as needed */
+    width: 80px;
     height: auto;
     margin-bottom: 10px;
-    filter: drop-shadow(0 0 5px var(--accent-pink)); /* Adds a nice glow */
+    filter: drop-shadow(0 0 5px var(--accent-pink));
 }
 
 .glitch-title {
@@ -75,6 +75,8 @@ header {
   color: #fff;
   text-shadow: 2px 2px 0px var(--accent-pink), -2px -2px 0px var(--accent-cyan);
   margin: 0;
+  text-align: center;
+  line-height: 1.1;
 }
 
 .subtitle {
@@ -84,6 +86,7 @@ header {
   letter-spacing: 3px;
   margin-top: 5px;
   opacity: 0.8;
+  text-align: center;
 }
 
 /* --- Layout --- */
@@ -93,8 +96,10 @@ header {
   align-items: center;
   position: relative;
   z-index: 1;
+  width: 100%; /* Ensure full width availability */
 }
 
+/* UPDATED: Responsive Game Interface */
 .game-interface {
   display: flex;
   gap: 30px;
@@ -104,30 +109,47 @@ header {
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0, 234, 255, 0.1), inset 0 0 50px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
+  
+  /* RESPONSIVE ADDITIONS */
+  flex-wrap: wrap; /* Allows sidebar to drop below board */
+  justify-content: center;
+  max-width: 95vw; /* Prevent overflow on small screens */
+  box-sizing: border-box;
 }
 
 /* --- The Board --- */
+/* UPDATED: Fluid Board Container */
 .board-container {
   padding: 12px;
   background: #000;
   border: 2px solid #333;
   border-radius: 4px;
   box-shadow: inset 0 0 20px #000;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
+/* UPDATED: Responsive Grid */
 .grid-4x4 {
   display: grid;
-  grid-template-columns: repeat(4, var(--tile-size));
-  grid-template-rows: repeat(4, var(--tile-size));
+  /* Use fractional units for fluid resizing */
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
   gap: var(--gap);
-  width: calc((var(--tile-size) * 4) + (var(--gap) * 3));
-  height: calc((var(--tile-size) * 4) + (var(--gap) * 3));
+  
+  /* Dynamic Width Logic:
+     Use 450px on desktop, but shrink to 85% of viewport on mobile */
+  width: min(var(--board-max-width), 85vw);
+  height: min(var(--board-max-width), 85vw); /* Keep aspect ratio square */
 }
 
 /* --- Tiles --- */
+/* UPDATED: Fluid Tiles */
 .tile {
-  width: var(--tile-size);
-  height: var(--tile-size);
+  /* Fill the grid cell exactly */
+  width: 100%;
+  height: 100%;
+  
   background-color: var(--panel-bg);
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
@@ -135,9 +157,12 @@ header {
   justify-content: center;
   align-items: center;
   font-size: 0;
-  transition: transform 0.1s ease-out;
+  
+  /* Smooth transitions for percentage based movement */
+  transition: transform 0.1s ease-out, background-position 0.2s ease-out;
+  
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-  touch-action: none; /* Critical for touch dragging */
+  touch-action: none; /* Prevents scrolling while dragging on mobile */
 }
 
 .tile:hover {
@@ -152,17 +177,22 @@ header {
 
 .empty-tile {
   background: transparent !important;
-  border: 2px solid #ffffff; /* Changed to solid white border */
+  border: 2px solid #ffffff;
   box-shadow: inset 0 0 20px #000;
   cursor: default;
 }
 
 /* --- Sidebar --- */
+/* UPDATED: Responsive Sidebar */
 .sidebar {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 220px;
+  
+  /* Fluid width logic */
+  width: 100%; 
+  max-width: 420px; /* Don't get wider than the board */
+  flex: 1 1 220px; /* Allow growing/shrinking */
 }
 
 .panel-box {
@@ -203,7 +233,6 @@ header {
   margin-bottom: 5px;
 }
 
-/* --- SQUARE CROPPER FIX --- */
 .image-cropper {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -215,20 +244,19 @@ header {
 .reference-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Forces square crop */
+  object-fit: cover;
   opacity: 0.9;
   display: block;
 }
 
 .disclaimer-text {
-  font-size: 0.75rem; /* Increased from 0.65rem */
+  font-size: 0.75rem;
   color: var(--accent-pink);
   margin-top: 10px;
-  font-style: normal; /* Removed italics for clarity */
-  opacity: 1; /* Removed opacity to prevent blur */
-  text-shadow: 0 0 2px rgba(255, 0, 85, 0.4); /* Adds crispness */
-  letter-spacing: 0.5px; /* Slight spacing to improve readability */
-  font-weight: bold; /* Makes it stand out against the scanlines */
+  opacity: 1;
+  text-shadow: 0 0 2px rgba(255, 0, 85, 0.4);
+  letter-spacing: 0.5px;
+  font-weight: bold;
 }
 
 /* --- Buttons --- */
@@ -247,6 +275,7 @@ header {
   margin-top: auto;
   border-radius: 4px;
   box-shadow: 0 4px 0px #b3003b;
+  width: 100%; /* Ensure full width in sidebar */
 }
 
 .arcade-btn:hover {
@@ -316,6 +345,7 @@ header {
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 0 50px rgba(0, 234, 255, 0.15);
+  max-width: 90%; /* Prevent modal overflow */
 }
 
 /* Gallery Specifics */
@@ -358,7 +388,7 @@ header {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Slightly smaller for mobile */
   gap: 12px;
   overflow-y: auto;
   padding: 10px;
@@ -379,18 +409,51 @@ header {
   transform: scale(1.05);
 }
 
-.gallery-grid::-webkit-scrollbar {
-  width: 8px;
-}
-.gallery-grid::-webkit-scrollbar-track {
-  background: #111;
-}
-.gallery-grid::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
-}
-
 .win-stats {
   margin: 20px 0;
   font-size: 1.5rem;
+}
+
+/* --- NEW: RESPONSIVE MEDIA QUERIES --- */
+
+/* Tablets and below */
+@media (max-width: 850px) {
+  .game-interface {
+    flex-direction: column; /* Stack board and sidebar */
+    align-items: center;
+    padding: 15px;
+    gap: 20px;
+  }
+
+  .sidebar {
+    max-width: 100%; 
+    width: min(var(--board-max-width), 85vw); /* Match board width */
+  }
+
+  .action-row {
+    flex-wrap: wrap; 
+  }
+}
+
+/* Small Phones */
+@media (max-width: 480px) {
+  .glitch-title {
+    font-size: 2.2rem;
+  }
+  
+  .subtitle {
+    font-size: 0.7rem;
+  }
+  
+  .game-interface {
+    padding: 10px;
+    width: 100%;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+  
+  .board-container {
+      padding: 6px;
+  }
 }
