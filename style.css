@@ -527,8 +527,8 @@ header {
     padding: 6px;
   }
 }
-@media (max-width: 400px) {
+/* @media (max-width: 400px) {
     .secondary-actions {
         flex-direction: column;
     }
-}
+} */

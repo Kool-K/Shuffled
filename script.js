@@ -27,19 +27,31 @@ let moves = 0;
 let timerInterval;
 let seconds = 0;
 let isGameActive = false;
-let currentImageSrc = ""; 
 
 // --- LOCAL IMAGE CONFIGURATION ---
 const galleryImages = [
-    // need to convert all to webp so let's rewrite
     "1.webp", "2.webp", "3.webp", "4.webp",
     "5.webp", "6.webp", "7.webp", "8.webp",
     "9.webp", "10.webp", "11.webp", "12.webp",
     "13.webp", "14.webp", "15.webp", "16.webp"
 ];
 
+// --- SESSION STORAGE LOGIC (NEW) ---
+// Define a key for storing data
+const STORAGE_KEY = "shuffledActiveImage";
+
+// Try to get a stored image from the previous session
+const storedImage = sessionStorage.getItem(STORAGE_KEY);
+
+// Set current image: Use stored one IF it exists, otherwise default to image 1
+let currentImageSrc = storedImage || `images/${galleryImages[0]}`;
+
+
 // --- CORE IMAGE OPTIMIZER ---
 function processImageAndStart(sourceUrl) {
+    // SAVE THE CURRENT IMAGE TO STORAGE FOR REFRESHES
+    sessionStorage.setItem(STORAGE_KEY, sourceUrl);
+
     const img = new Image();
     img.crossOrigin = "Anonymous"; 
     
@@ -60,7 +72,7 @@ function processImageAndStart(sourceUrl) {
         // Draw to canvas
         ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, maxSize, maxSize);
 
-        // Save optimized image
+        // Save optimized image data for rendering
         currentImageSrc = canvas.toDataURL('image/jpeg', 0.85);
         
         // Start Game
@@ -75,6 +87,7 @@ function processImageAndStart(sourceUrl) {
 function initGame() {
     resetStats();
     tiles = generateSolvableBoard();
+    // Use the optimized data URL for display
     refImg.src = currentImageSrc;
     renderBoard();
     startTimer();
@@ -93,10 +106,11 @@ function initGallery() {
         
         img.src = url;
         img.classList.add("gallery-item");
-        img.loading = "lazy";
+        // img.loading = "lazy"; // Keep lazy loading commented out based on previous discussion, or uncomment if you prefer
 
         img.addEventListener("click", () => {
             galleryModal.classList.add("hidden");
+            // This will trigger processImageAndStart, which saves to storage
             processImageAndStart(url);
         });
         galleryGrid.appendChild(img);
@@ -109,16 +123,19 @@ uploadInput.addEventListener("change", (e) => {
     if (file) {
         const reader = new FileReader();
         reader.onload = function (event) {
+            // This will trigger processImageAndStart, which saves to storage
             processImageAndStart(event.target.result);
         };
         reader.readAsDataURL(file);
     }
 });
 
-// Start with the first image
+// --- STARTUP LOGIC (UPDATED) ---
 window.onload = () => {
-    processImageAndStart(`images/${galleryImages[0]}`);
+    // On load, process whichever image was determined at the top (stored or default)
+    processImageAndStart(currentImageSrc);
 };
+
 
 // --- BOARD GENERATION & MATH ---
 
@@ -157,7 +174,7 @@ function isSolvable(boardState) {
     }
 }
 
-// --- RENDERING (UPDATED FOR RESPONSIVE) ---
+// --- RENDERING (RESPONSIVE) ---
 
 function renderBoard() {
     board.innerHTML = "";
@@ -173,7 +190,7 @@ function renderBoard() {
             const x = originalIndex % GRID_SIZE; // Column
             const y = Math.floor(originalIndex / GRID_SIZE); // Row
 
-            // Background Image
+            // Background Image (uses optimized data URL)
             tile.style.backgroundImage = `url('${currentImageSrc}')`;
 
             // --- RESPONSIVE CALCULATION ---
@@ -212,8 +229,6 @@ function handleDragStart(e, index) {
         dragStartX = e.clientX;
         dragStartY = e.clientY;
     } else if (e.type === 'touchstart') {
-        // Don't preventDefault here to allow scrolling on non-tile areas,
-        // but .tile CSS has touch-action: none so it should be fine.
         dragStartX = e.touches[0].clientX;
         dragStartY = e.touches[0].clientY;
     }
@@ -287,7 +302,6 @@ document.addEventListener("keydown", (e) => {
     let targetIndex = -1;
 
     // Logic reversed for intuitive keyboard control
-    // (If I press Down, I want the tile ABOVE the gap to move DOWN)
     if (e.key === "ArrowDown" && row > 0) targetIndex = emptyIndex - GRID_SIZE;
     else if (e.key === "ArrowUp" && row < GRID_SIZE - 1) targetIndex = emptyIndex + GRID_SIZE;
     else if (e.key === "ArrowRight" && col > 0) targetIndex = emptyIndex - 1;
@@ -360,21 +374,16 @@ openGalleryBtn.addEventListener("click", () => {
 closeGalleryBtn.addEventListener("click", () => galleryModal.classList.add("hidden"));
 window.addEventListener("click", (e) => {
     if (e.target === galleryModal) galleryModal.classList.add("hidden");
-
+});
 
 // --- NEW MODAL BUTTON LISTENERS ---
-
-// 1. Gallery button inside the Win Modal
 modalGalleryBtn.addEventListener("click", () => {
-    winModal.classList.add("hidden"); // Hide win modal
-    initGallery(); // Load images
-    galleryModal.classList.remove("hidden"); // Show gallery modal
+    winModal.classList.add("hidden");
+    initGallery();
+    galleryModal.classList.remove("hidden");
 });
 
-// 2. Upload button inside the Win Modal
 modalUploadBtn.addEventListener("click", () => {
-    // Clever hack: We just programmatically click the hidden input field in the sidebar
     uploadInput.click();
-    winModal.classList.add("hidden"); // Hide the modal so they can see the file picker
-});
+    winModal.classList.add("hidden");
 });
