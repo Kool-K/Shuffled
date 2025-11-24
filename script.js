@@ -14,6 +14,9 @@ const uploadInput = document.getElementById("upload-input");
 const newGameBtn = document.getElementById("new-game-btn");
 const playAgainBtn = document.getElementById("play-again-btn");
 
+const modalGalleryBtn = document.getElementById("modal-gallery-btn");
+const modalUploadBtn = document.getElementById("modal-upload-btn");
+
 // Configuration
 const GRID_SIZE = 4;
 const TOTAL_TILES = GRID_SIZE * GRID_SIZE;
@@ -357,4 +360,21 @@ openGalleryBtn.addEventListener("click", () => {
 closeGalleryBtn.addEventListener("click", () => galleryModal.classList.add("hidden"));
 window.addEventListener("click", (e) => {
     if (e.target === galleryModal) galleryModal.classList.add("hidden");
+
+
+// --- NEW MODAL BUTTON LISTENERS ---
+
+// 1. Gallery button inside the Win Modal
+modalGalleryBtn.addEventListener("click", () => {
+    winModal.classList.add("hidden"); // Hide win modal
+    initGallery(); // Load images
+    galleryModal.classList.remove("hidden"); // Show gallery modal
+});
+
+// 2. Upload button inside the Win Modal
+modalUploadBtn.addEventListener("click", () => {
+    // Clever hack: We just programmatically click the hidden input field in the sidebar
+    uploadInput.click();
+    winModal.classList.add("hidden"); // Hide the modal so they can see the file picker
+});
 });
