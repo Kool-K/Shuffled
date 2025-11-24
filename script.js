@@ -93,7 +93,7 @@ function initGallery() {
         
         img.src = url;
         img.classList.add("gallery-item");
-        img.loading = "lazy";
+        // img.loading = "lazy";
 
         img.addEventListener("click", () => {
             galleryModal.classList.add("hidden");
