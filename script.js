@@ -44,13 +44,19 @@ const STORAGE_KEY = "shuffledActiveImage";
 const storedImage = sessionStorage.getItem(STORAGE_KEY);
 
 // Set current image: Use stored one IF it exists, otherwise default to image 1
+// Note: We use the raw path here; it will be processed by processImageAndStart later.
 let currentImageSrc = storedImage || `images/${galleryImages[0]}`;
 
 
 // --- CORE IMAGE OPTIMIZER ---
 function processImageAndStart(sourceUrl) {
     // SAVE THE CURRENT IMAGE TO STORAGE FOR REFRESHES
-    sessionStorage.setItem(STORAGE_KEY, sourceUrl);
+    // This ensures that whatever image is being processed becomes the "active" one.
+    try {
+        sessionStorage.setItem(STORAGE_KEY, sourceUrl);
+    } catch (e) {
+        console.warn("Could not save image to session storage. Refresh feature may not work.", e);
+    }
 
     const img = new Image();
     img.crossOrigin = "Anonymous"; 
@@ -73,10 +79,20 @@ function processImageAndStart(sourceUrl) {
         ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, maxSize, maxSize);
 
         // Save optimized image data for rendering
+        // Note: We update the global variable with the Data URL for rendering
         currentImageSrc = canvas.toDataURL('image/jpeg', 0.85);
         
         // Start Game
         initGame();
+    };
+
+    // Handle image loading errors (e.g., broken link)
+    img.onerror = function() {
+        console.error("Failed to load image:", sourceUrl);
+        // Fallback to default image if loading fails and it's not already the default
+        if (sourceUrl !== `images/${galleryImages[0]}`) {
+             processImageAndStart(`images/${galleryImages[0]}`);
+        }
     };
 
     img.src = sourceUrl;
@@ -106,7 +122,7 @@ function initGallery() {
         
         img.src = url;
         img.classList.add("gallery-item");
-        // img.loading = "lazy"; // Keep lazy loading commented out based on previous discussion, or uncomment if you prefer
+        img.loading = "lazy"; // Lazy loading is good for the gallery grid
 
         img.addEventListener("click", () => {
             galleryModal.classList.add("hidden");
@@ -133,7 +149,10 @@ uploadInput.addEventListener("change", (e) => {
 // --- STARTUP LOGIC (UPDATED) ---
 window.onload = () => {
     // On load, process whichever image was determined at the top (stored or default)
+    // This is the crucial step that loads the saved image on refresh.
     processImageAndStart(currentImageSrc);
+    // Initialize gallery once on load
+    initGallery();
 };
 
 
@@ -368,7 +387,7 @@ newGameBtn.addEventListener("click", initGame);
 playAgainBtn.addEventListener("click", initGame);
 
 openGalleryBtn.addEventListener("click", () => {
-    initGallery();
+    // No need to re-initialize gallery every time, it's done on load.
     galleryModal.classList.remove("hidden");
 });
 closeGalleryBtn.addEventListener("click", () => galleryModal.classList.add("hidden"));
@@ -379,7 +398,6 @@ window.addEventListener("click", (e) => {
 // --- NEW MODAL BUTTON LISTENERS ---
 modalGalleryBtn.addEventListener("click", () => {
     winModal.classList.add("hidden");
-    initGallery();
     galleryModal.classList.remove("hidden");
 });
 
