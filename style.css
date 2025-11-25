@@ -26,6 +26,7 @@ body {
   margin: 0;
   user-select: none;
   overflow-x: hidden;
+  padding-bottom: 40px; 
 }
 
 /* --- Retro Scanline Effect --- */
@@ -81,10 +82,10 @@ header {
 }
 
 .logo-img {
-    width: 70px; /* Adjust size as needed */
-    height: auto;
-    margin-bottom: 10px;
-    filter: drop-shadow(0 0 5px var(--accent-pink)); /* Adds a nice glow */
+  width: 70px; /* Adjust size as needed */
+  height: auto;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 5px var(--accent-pink)); /* Adds a nice glow */
 }
 
 /* --- Layout --- */
@@ -421,48 +422,83 @@ header {
 }
 
 .win-content {
-    max-width: 450px;
+  max-width: 450px;
 }
 
 .main-win-btn {
-    margin-bottom: 20px;
-    width: 100%;
-    font-size: 1.2rem;
+  margin-bottom: 20px;
+  width: 100%;
+  font-size: 1.2rem;
 }
 
 .next-steps {
-    margin-top: 15px;
-    border-top: 1px solid #333;
-    padding-top: 15px;
+  margin-top: 15px;
+  border-top: 1px solid #333;
+  padding-top: 15px;
 }
 
 .modal-subtitle {
-    font-size: 0.8rem;
-    color: var(--accent-cyan);
-    margin-bottom: 15px;
-    opacity: 0.8;
-    letter-spacing: 2px;
+  font-size: 0.8rem;
+  color: var(--accent-cyan);
+  margin-bottom: 15px;
+  opacity: 0.8;
+  letter-spacing: 2px;
 }
 
 .secondary-actions {
-    display: flex;
-    gap: 15px;
+  display: flex;
+  gap: 15px;
 }
 
 .neon-hover {
-    padding: 12px;
-    font-size: 0.9rem;
-    background: rgba(0, 234, 255, 0.1); /* Slight background tint */
-    transition: all 0.3s ease;
+  padding: 12px;
+  font-size: 0.9rem;
+  background: rgba(0, 234, 255, 0.1); /* Slight background tint */
+  transition: all 0.3s ease;
 }
 
 .neon-hover:hover {
-    background: var(--accent-cyan);
-    color: #000;
-    box-shadow: 0 0 20px rgba(0, 234, 255, 0.6);
-    transform: translateY(-3px);
+  background: var(--accent-cyan);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 234, 255, 0.6);
+  transform: translateY(-3px);
 }
 
+/* --- IN style.css --- */
+
+/* FOOTER STYLES */
+.arcade-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background: rgba(10, 10, 10, 0.8); /* Semi-transparent black */
+  border-top: 1px solid #333;
+  font-size: 0.8rem;
+  color: #888;
+  z-index: 10; /* Ensure it sits above the scanlines */
+  backdrop-filter: blur(5px);
+}
+
+.arcade-footer p {
+  margin: 0;
+}
+
+.portfolio-link {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  text-shadow: 0 0 2px rgba(0, 234, 255, 0.3);
+}
+
+.portfolio-link:hover {
+  color: var(--accent-pink);
+  text-shadow: 0 0 5px rgba(255, 0, 85, 0.6);
+  letter-spacing: 1px; /* Cool little expansion effect on hover */
+}
 
 /* --- MEDIA QUERIES --- */
 

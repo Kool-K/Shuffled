@@ -405,3 +405,4 @@ modalUploadBtn.addEventListener("click", () => {
     uploadInput.click();
     winModal.classList.add("hidden");
 });
+document.getElementById("copyright-year").innerText = new Date().getFullYear();
