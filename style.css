@@ -568,3 +568,146 @@ header {
         flex-direction: column;
     }
 } */
+
+
+/* demo overlay styles -> new one for reference*/
+.demo-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 10, 10, 0.9); /* Darker background for better contrast */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    transition: opacity 0.3s ease, visibility 0.3s;
+}
+
+.demo-overlay.hidden {
+    opacity: 0;
+    visibility: hidden; /* Ensure it doesn't block clicks after hiding */
+}
+
+.demo-content {
+    text-align: center;
+    color: var(--text-color);
+    background: rgba(22, 22, 26, 0.8);
+    padding: 30px;
+    border: 2px solid var(--accent-cyan);
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0, 234, 255, 0.2);
+}
+
+.demo-content h2 {
+    font-family: var(--font-heading);
+    color: var(--accent-pink);
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--accent-pink);
+}
+
+/* --- The Diagram Structure --- */
+.instruction-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* Common box styles */
+.diagram-box {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border-radius: 8px;
+    position: relative;
+}
+
+/* 1. The Movable Tile Box */
+.movable-piece {
+    background: var(--panel-bg);
+    border: 2px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.4);
+}
+
+.hand-icon {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    color: var(--accent-pink);
+    /* Subtle nudge animation */
+    animation: nudgeRight 1.5s ease-in-out infinite;
+}
+
+/* 2. The Arrow */
+.arrow-connector {
+    font-size: 2.5rem;
+    color: var(--text-color);
+}
+
+.bounce-arrow {
+    /* Strong pointing animation */
+    animation: strongBounceRight 1.5s ease-in-out infinite;
+    color: var(--accent-pink);
+}
+
+/* 3. The Empty Target Box */
+.empty-target {
+    background: transparent;
+    /* Dashed border makes it look like a "slot" */
+    border: 3px dashed var(--accent-pink);
+    color: var(--accent-pink);
+    /* Glowing pulse to indicate it's the goal */
+    animation: glowPulse 1.5s ease-in-out infinite alternate;
+}
+
+/* --- Text Styles --- */
+.demo-text {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    max-width: 300px;
+    line-height: 1.4;
+}
+
+.pulse-text {
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+    letter-spacing: 2px;
+    font-weight: bold;
+    animation: textPulse 1.5s ease-in-out infinite;
+}
+
+/* --- Keyframe Animations --- */
+
+@keyframes nudgeRight {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+}
+
+@keyframes strongBounceRight {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
+    40% { transform: translateX(-10px); }
+    60% { transform: translateX(-5px); }
+}
+
+@keyframes glowPulse {
+    from { box-shadow: inset 0 0 5px var(--accent-pink); }
+    to { box-shadow: inset 0 0 20px var(--accent-pink); }
+}
+
+@keyframes textPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Ensure board container is relative for absolute overlay */
+.board-container {
+    position: relative;
+}

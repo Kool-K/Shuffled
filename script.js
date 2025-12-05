@@ -406,3 +406,9 @@ modalUploadBtn.addEventListener("click", () => {
     winModal.classList.add("hidden");
 });
 document.getElementById("copyright-year").innerText = new Date().getFullYear();
+const demoOverlay = document.getElementById('demo-overlay');
+
+// Hide the overlay on the first click anywhere on it
+demoOverlay.addEventListener('click', () => {
+    demoOverlay.classList.add('hidden');
+}, { once: true }); // { once: true } ensures it only runs once
